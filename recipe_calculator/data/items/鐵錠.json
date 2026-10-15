@@ -1,0 +1,23 @@
+{
+    "name": "鐵錠",
+    "recipes": [
+        {
+            "output_quantity": 3,
+            "ingredients": [
+                {
+                    "item_name": "礦石",
+                    "quantity": 20
+                }
+            ]
+        },
+        {
+            "output_quantity": 3,
+            "ingredients": [
+                {
+                    "item_name": "鐵礦石",
+                    "quantity": 10
+                }
+            ]
+        }
+    ]
+}
