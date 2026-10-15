@@ -1,0 +1,22 @@
+{
+    "name": "合金鋼錠",
+    "recipes": [
+        {
+            "output_quantity": 3,
+            "ingredients": [
+                {
+                    "item_name": "鋼錠",
+                    "quantity": 3
+                },
+                {
+                    "item_name": "銅礦石",
+                    "quantity": 15
+                },
+                {
+                    "item_name": "煤炭",
+                    "quantity": 8
+                }
+            ]
+        }
+    ]
+}
