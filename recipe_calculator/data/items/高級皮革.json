@@ -1,0 +1,22 @@
+{
+    "name": "高級皮革",
+    "recipes": [
+        {
+            "output_quantity": 3,
+            "ingredients": [
+                {
+                    "item_name": "皮革+",
+                    "quantity": 3
+                },
+                {
+                    "item_name": "高級生皮",
+                    "quantity": 15
+                },
+                {
+                    "item_name": "單寧粉末",
+                    "quantity": 8
+                }
+            ]
+        }
+    ]
+}

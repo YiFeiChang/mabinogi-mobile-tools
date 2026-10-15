@@ -1,0 +1,14 @@
+{
+    "name": "皮革",
+    "recipes": [
+        {
+            "output_quantity": 3,
+            "ingredients": [
+                {
+                    "item_name": "生皮",
+                    "quantity": 10
+                }
+            ]
+        }
+    ]
+}

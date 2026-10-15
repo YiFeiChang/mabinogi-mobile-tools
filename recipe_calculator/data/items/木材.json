@@ -1,0 +1,14 @@
+{
+    "name": "木材",
+    "recipes": [
+        {
+            "output_quantity": 3,
+            "ingredients": [
+                {
+                    "item_name": "原木",
+                    "quantity": 10
+                }
+            ]
+        }
+    ]
+}
