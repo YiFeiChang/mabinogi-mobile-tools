@@ -25,7 +25,7 @@ def load_item(item_name: str, cache: dict[str, Item]) -> Item:
     # 若找不到對應的 JSON 檔案，則視為基礎素材（recipes 設為空清單）
     # 對應 C# 的：若檔案不存在則回傳預設無配方的物件
     if not os.path.exists(file_path):
-        base_item = Item(name=item_name, recipes=[])
+        base_item: Item = Item(name=item_name, recipes=[])
         cache[item_name] = base_item
         return base_item
 
@@ -47,39 +47,94 @@ def load_item(item_name: str, cache: dict[str, Item]) -> Item:
             sub_item_name: str = entry_data["item_name"]
             sub_quantity: int = entry_data["quantity"]
             # 遞迴載入子物品（對應 C# 的遞迴物件初始化與相依性解析）
-            sub_item = load_item(sub_item_name, cache)
+            sub_item: Item = load_item(sub_item_name, cache)
             recipe_entry_list.append(RecipeEntry(item=sub_item, quantity=sub_quantity))
         
         recipes_list.append(Recipe(output_quantity=output_qty, entries=recipe_entry_list))
 
     # 建立物品實例並存入快取
-    item = Item(name=item_obj_name, recipes=recipes_list)
+    item: Item = Item(name=item_obj_name, recipes=recipes_list)
     cache[item_name] = item
     return item
 
 
-def calculate_requirements(
+def get_recipe_base_materials(
+    recipe: Recipe,
+    required_qty: int,
+    cache: dict[str, Item]
+) -> dict[str, int]:
+    """計算指定配方所需要的基礎素材統計。"""
+    base_materials: dict[str, int] = {}
+    batches: int = math.ceil(required_qty / recipe.output_quantity)
+    
+    for entry in recipe.entries:
+        sub_qty: int = entry.quantity * batches
+        accumulate_requirements(entry.item, sub_qty, base_materials, cache)
+        
+    return base_materials
+
+
+def accumulate_requirements(
     item: Item,
     required_qty: int,
-    indent: int,
-    base_materials: dict[str, int]
+    base_materials: dict[str, int],
+    cache: dict[str, Item]
 ) -> None:
-    """遞迴計算材料需求樹（單一分支專用）。"""
-    prefix: str = "  " * indent
-    print(f"{prefix}{item.name} x {required_qty}")
-
-    # 若該物品沒有配方（recipes 為空），則視為基礎素材，加入統計字典
+    """遞迴累加基礎素材數量（用於評估哪個配方的基礎素材最少）。"""
     if not item.recipes:
         base_materials[item.name] = base_materials.get(item.name, 0) + required_qty
         return
 
-    # 假設取用第一個配方（當此函式被獨立呼叫時，代表正在走單一分支）
-    recipe = item.recipes[0]
-    batches: int = math.ceil(required_qty / recipe.output_quantity)
+    best_recipe: Recipe = select_best_recipe(item, required_qty, cache)
+    batches: int = math.ceil(required_qty / best_recipe.output_quantity)
+    
+    for entry in best_recipe.entries:
+        accumulate_requirements(entry.item, entry.quantity * batches, base_materials, cache)
 
-    for entry in recipe.entries:
+
+def select_best_recipe(
+    item: Item,
+    required_qty: int,
+    cache: dict[str, Item]
+) -> Recipe:
+    """從多個配方中選出總基礎素材消耗量最少的一個配方。"""
+    if len(item.recipes) <= 1:
+        return item.recipes[0]
+
+    best_recipe: Recipe = item.recipes[0]
+    min_total_cost: float = float('inf')
+
+    for recipe in item.recipes:
+        materials: dict[str, int] = get_recipe_base_materials(recipe, required_qty, cache)
+        total_cost: int = sum(materials.values())
+        if total_cost < min_total_cost:
+            min_total_cost = total_cost
+            best_recipe = recipe
+
+    return best_recipe
+
+
+def print_material_tree(
+    item: Item,
+    required_qty: int,
+    indent: int,
+    cache: dict[str, Item]
+) -> None:
+    """遞迴印出最少基礎素材配方的樹狀素材清單。"""
+    prefix: str = "  " * indent
+    print(f"{prefix}- {item.name} x {required_qty}")
+
+    # 若該物品沒有配方（recipes 為空），則為基礎素材，停止遞迴
+    if not item.recipes:
+        return
+
+    # 自動挑選總基礎素材最少的主配方
+    best_recipe: Recipe = select_best_recipe(item, required_qty, cache)
+    batches: int = math.ceil(required_qty / best_recipe.output_quantity)
+
+    for entry in best_recipe.entries:
         sub_total_qty: int = entry.quantity * batches
-        calculate_requirements(entry.item, sub_total_qty, indent + 1, base_materials)
+        print_material_tree(entry.item, sub_total_qty, indent + 1, cache)
 
 
 # 對應 C# 的 static int Main(string[] arguments)
@@ -105,28 +160,15 @@ def main(arguments: list[str]) -> int:
     item_cache: dict[str, Item] = {}
 
     # 依照目標物品名稱載入 JSON 並構建關聯樹
-    root_item = load_item(target_item, item_cache)
+    root_item: Item = load_item(target_item, item_cache)
 
     # 若該物品完全沒有配方
     if not root_item.recipes:
         print("此物品為基礎素材，無須配方。")
         return 0
 
-    # 核心修改：將每一個配方分支完全分開獨立計算與輸出
-    for index, recipe in enumerate(root_item.recipes):
-        branch_num: int = index + 1
-        print(f"=== [獨立分支 {branch_num}] (單次產出: {recipe.output_quantity}) ===")
-        
-        # 宣告獨立的字典來記錄該分支的基礎素材總數
-        branch_base_materials: dict[str, int] = {}
-        
-        # 進行遞迴計算
-        calculate_requirements(root_item, target_quantity, indent=0, base_materials=branch_base_materials)
-
-        print(f"\n--- [分支 {branch_num}] 基礎素材總數統計 ---")
-        for name, qty in branch_base_materials.items():
-            print(f"  - {name}: {qty}")
-        print("\n" + "=" * 40 + "\n")
+    print("=== 最少基礎素材配方樹狀清單 ===")
+    print_material_tree(root_item, target_quantity, indent=0, cache=item_cache)
 
     # 回傳 0 代表程式正常執行完畢
     return 0
