@@ -20,7 +20,7 @@ def load_item(item_name: str, cache: dict[str, Item]) -> Item:
     if item_name in cache:
         return cache[item_name]
 
-    file_path: str = os.path.join("data", "items", f"{item_name}.json")
+    file_path: str = os.path.join(os.path.dirname(__file__), "data", "items", f"{item_name}.json")
 
     # 若找不到對應的 JSON 檔案，則視為基礎素材（recipes 設為空清單）
     # 對應 C# 的：若檔案不存在則回傳預設無配方的物件
@@ -119,22 +119,27 @@ def print_material_tree(
     required_qty: int,
     indent: int,
     cache: dict[str, Item]
-) -> None:
-    """遞迴印出最少基礎素材配方的樹狀素材清單。"""
+) -> dict[str, int]:
+    """遞迴印出素材樹，並回傳各末端素材的需求數量。"""
     prefix: str = "  " * indent
     print(f"{prefix}- {item.name} x {required_qty}")
 
     # 若該物品沒有配方（recipes 為空），則為基礎素材，停止遞迴
     if not item.recipes:
-        return
+        return {item.name: required_qty}
 
     # 自動挑選總基礎素材最少的主配方
     best_recipe: Recipe = select_best_recipe(item, required_qty, cache)
     batches: int = math.ceil(required_qty / best_recipe.output_quantity)
+    base_materials: dict[str, int] = {}
 
     for entry in best_recipe.entries:
         sub_total_qty: int = entry.quantity * batches
-        print_material_tree(entry.item, sub_total_qty, indent + 1, cache)
+        sub_materials: dict[str, int] = print_material_tree(entry.item, sub_total_qty, indent + 1, cache)
+        for material_name, material_qty in sub_materials.items():
+            base_materials[material_name] = base_materials.get(material_name, 0) + material_qty
+
+    return base_materials
 
 
 # 對應 C# 的 static int Main(string[] arguments)
@@ -165,10 +170,14 @@ def main(arguments: list[str]) -> int:
     # 若該物品完全沒有配方
     if not root_item.recipes:
         print("此物品為基礎素材，無須配方。")
+        print(f"基礎素材需求總數:\n- {root_item.name}: {target_quantity}")
         return 0
 
     print("=== 最少基礎素材配方樹狀清單 ===")
-    print_material_tree(root_item, target_quantity, indent=0, cache=item_cache)
+    base_materials: dict[str, int] = print_material_tree(root_item, target_quantity, indent=0, cache=item_cache)
+    print("\n基礎素材需求總數:")
+    for material_name in sorted(base_materials):
+        print(f"- {material_name}: {base_materials[material_name]}")
 
     # 回傳 0 代表程式正常執行完畢
     return 0

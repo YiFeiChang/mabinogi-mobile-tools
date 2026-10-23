@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#121b18">
+  <title>工坊配方計算器</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #111916;
+      --panel: #1b2621;
+      --panel-soft: #202d27;
+      --line: #34443a;
+      --text: #f1eee3;
+      --muted: #a5afa3;
+      --accent: #d4ad68;
+      --accent-dark: #9e7840;
+      --green: #91b38e;
+      font-family: "Segoe UI", "Noto Sans TC", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(ellipse at 80% 0%, #283b302e, transparent 42rem),
+        linear-gradient(145deg, #121a16, var(--bg) 58%);
+    }
+
+    .shell { width: min(1040px, calc(100% - 40px)); margin: 0 auto; padding: 46px 0 64px; }
+    .topline { display: flex; align-items: center; gap: 10px; color: var(--accent); font-size: 12px; letter-spacing: .18em; text-transform: uppercase; }
+    .topline::before { width: 24px; height: 1px; background: var(--accent); content: ""; }
+    h1 { margin: 15px 0 8px; font-family: Georgia, "Noto Serif TC", serif; font-size: clamp(32px, 5vw, 48px); font-weight: 500; letter-spacing: .04em; }
+    .intro { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.8; }
+
+    .layout { display: grid; grid-template-columns: minmax(260px, .78fr) minmax(0, 1.22fr); gap: 20px; margin-top: 32px; align-items: start; }
+    .panel { border: 1px solid var(--line); border-radius: 14px; background: #1b2621eF; box-shadow: 0 18px 50px #05090738; }
+    .form-panel { padding: 25px; }
+    .section-label { margin: 0 0 22px; color: var(--accent); font-size: 12px; font-weight: 700; letter-spacing: .14em; }
+    label { display: block; margin: 0 0 9px; color: #d9ded5; font-size: 13px; }
+    input {
+      width: 100%; min-height: 48px; border: 1px solid #435248; border-radius: 8px; outline: none;
+      background: #121a16; color: var(--text); padding: 0 14px; font: inherit; transition: border-color .18s, box-shadow .18s;
+    }
+    input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px #d4ad681c; }
+    .field + .field { margin-top: 20px; }
+    .hint { margin: 8px 0 0; color: #879389; font-size: 12px; }
+    button {
+      width: 100%; min-height: 48px; margin-top: 25px; border: 1px solid var(--accent);
+      border-radius: 8px; background: linear-gradient(135deg, #dbb977, #c59a55); color: #1b1b14;
+      font: inherit; font-weight: 700; cursor: pointer; transition: filter .18s, transform .18s;
+    }
+    button:hover { filter: brightness(1.08); transform: translateY(-1px); }
+    button:disabled { cursor: wait; opacity: .65; transform: none; }
+
+    .results { min-height: 260px; padding: 25px; }
+    .empty { display: grid; min-height: 205px; place-items: center; color: #849087; text-align: center; line-height: 1.8; }
+    .empty-mark { display: block; margin-bottom: 10px; color: #607368; font-family: Georgia, serif; font-size: 38px; }
+    .error { color: #e8a092; font-size: 14px; }
+    .result-heading { display: flex; justify-content: space-between; gap: 15px; align-items: baseline; padding-bottom: 17px; border-bottom: 1px solid var(--line); }
+    .result-heading h2 { margin: 0; font-size: 19px; font-weight: 600; }
+    .result-count { color: var(--muted); font-size: 12px; white-space: nowrap; }
+    .subheading { margin: 22px 0 12px; color: var(--muted); font-size: 12px; letter-spacing: .08em; }
+    .materials { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 9px; }
+    .material { display: flex; justify-content: space-between; gap: 10px; padding: 12px 13px; border: 1px solid #35473c; border-radius: 8px; background: var(--panel-soft); font-size: 14px; }
+    .material strong { color: var(--green); font-variant-numeric: tabular-nums; }
+    details { margin-top: 20px; border-top: 1px solid var(--line); padding-top: 16px; }
+    summary { color: #d1d8ce; font-size: 13px; cursor: pointer; }
+    .tree { margin: 12px 0 0; padding-left: 20px; list-style: none; }
+    .tree li { position: relative; margin: 8px 0; color: #bfc8bf; font-size: 13px; }
+    .tree li::before { position: absolute; left: -13px; color: #647a6b; content: "└"; }
+    .tree ul { margin-top: 8px; padding-left: 20px; list-style: none; }
+    .tree-quantity { color: var(--green); font-variant-numeric: tabular-nums; }
+    footer { margin-top: 25px; color: #78847a; font-size: 12px; text-align: center; }
+
+    @media (max-width: 720px) {
+      .shell { width: min(100% - 28px, 520px); padding-top: 30px; }
+      .layout { grid-template-columns: 1fr; gap: 14px; margin-top: 24px; }
+      .form-panel, .results { padding: 20px; }
+      .results { min-height: 210px; }
+      .empty { min-height: 160px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="topline">Mabinogi Mobile · Workshop</div>
+    <h1>工坊配方計算器</h1>
+    <p class="intro">選擇想製作的物品與數量，快速整理配方所需的基礎素材。</p>
+
+    <div class="layout">
+      <form class="panel form-panel" id="calculator">
+        <p class="section-label">製作設定 <span aria-hidden="true">/</span> CRAFTING</p>
+        <div class="field">
+          <label for="item">目標物品</label>
+          <input id="item" name="item" list="item-list" placeholder="搜尋或輸入物品名稱" autocomplete="off" required>
+          <datalist id="item-list"></datalist>
+          <p class="hint" id="item-hint">正在載入物品清單…</p>
+        </div>
+        <div class="field">
+          <label for="quantity">製作數量</label>
+          <input id="quantity" name="quantity" type="number" min="1" step="1" value="1" required>
+          <p class="hint">配方會自動計算完整製作批次。</p>
+        </div>
+        <button id="calculate" type="submit">計算所需素材</button>
+      </form>
+
+      <section class="panel results" id="results" aria-live="polite">
+        <div class="empty"><div><span class="empty-mark" aria-hidden="true">✳</span>輸入目標物品，開始整理你的工坊清單。</div></div>
+      </section>
+    </div>
+    <footer>素材數量依配方批次向上取整 · 自動選擇基礎素材總量較少的配方</footer>
+  </main>
+
+  <script>
+    const form = document.querySelector("#calculator");
+    const itemInput = document.querySelector("#item");
+    const quantityInput = document.querySelector("#quantity");
+    const itemList = document.querySelector("#item-list");
+    const itemHint = document.querySelector("#item-hint");
+    const calculateButton = document.querySelector("#calculate");
+    const results = document.querySelector("#results");
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, (character) => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      })[character]);
+    }
+
+    function renderTree(node) {
+      const batches = node.batches ? ` · ${node.batches} 批` : "";
+      const children = node.children.length
+        ? `<ul>${node.children.map(renderTree).join("")}</ul>`
+        : "";
+      return `<li>${escapeHtml(node.name)} <span class="tree-quantity">× ${node.quantity}</span>${batches}${children}</li>`;
+    }
+
+    function renderResult(data, item, quantity) {
+      const materials = Object.entries(data.materials).map(([name, amount]) =>
+        `<div class="material"><span>${escapeHtml(name)}</span><strong>× ${amount}</strong></div>`
+      ).join("");
+      const total = Object.values(data.materials).reduce((sum, amount) => sum + amount, 0);
+      results.innerHTML = `
+        <div class="result-heading">
+          <h2>${escapeHtml(item)} <span class="tree-quantity">× ${quantity}</span></h2>
+          <span class="result-count">${Object.keys(data.materials).length} 種基礎素材 · 共 ${total} 個</span>
+        </div>
+        <p class="subheading">基礎素材需求總數</p>
+        <div class="materials">${materials}</div>
+        <details>
+          <summary>查看完整配方樹</summary>
+          <ul class="tree">${renderTree(data.tree)}</ul>
+        </details>`;
+    }
+
+    async function loadItems() {
+      try {
+        const response = await fetch("/api/items");
+        if (!response.ok) throw new Error("無法載入物品清單。");
+        const items = await response.json();
+        itemList.replaceChildren(...items.map((name) => {
+          const option = document.createElement("option");
+          option.value = name;
+          return option;
+        }));
+        itemHint.textContent = `已載入 ${items.length} 種物品，可搜尋配方物品與基礎素材。`;
+        if (items.includes("巨木長弓S")) itemInput.value = "巨木長弓S";
+      } catch (error) {
+        itemHint.textContent = error.message;
+      }
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      results.innerHTML = '<div class="empty">正在計算配方…</div>';
+      calculateButton.disabled = true;
+      try {
+        const response = await fetch("/api/calculate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ item: itemInput.value.trim(), quantity: Number(quantityInput.value) })
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "計算失敗，請稍後再試。");
+        renderResult(data, itemInput.value.trim(), Number(quantityInput.value));
+      } catch (error) {
+        results.innerHTML = `<div class="empty error">${escapeHtml(error.message)}</div>`;
+      } finally {
+        calculateButton.disabled = false;
+      }
+    });
+
+    loadItems();
+  </script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+    "name": "焦油",
+    "recipes": [
+        {
+            "output_quantity": 5,
+            "ingredients": [
+                {
+                    "item_name": "原木",
+                    "quantity": 50
+                },
+                {
+                    "item_name": "黏土",
+                    "quantity": 25
+                }
+            ]
+        }
+    ]
+}
