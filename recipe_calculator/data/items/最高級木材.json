@@ -1,0 +1,22 @@
+{
+    "name": "最高級木材",
+    "recipes": [
+        {
+            "output_quantity": 3,
+            "ingredients": [
+                {
+                    "item_name": "高級木材+",
+                    "quantity": 5
+                },
+                {
+                    "item_name": "最高級原木",
+                    "quantity": 20
+                },
+                {
+                    "item_name": "樹液",
+                    "quantity": 16
+                }
+            ]
+        }
+    ]
+}

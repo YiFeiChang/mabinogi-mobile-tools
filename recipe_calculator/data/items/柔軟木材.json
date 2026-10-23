@@ -1,0 +1,22 @@
+{
+    "name": "柔軟木材",
+    "recipes": [
+        {
+            "output_quantity": 3,
+            "ingredients": [
+                {
+                    "item_name": "高級木材+",
+                    "quantity": 15
+                },
+                {
+                    "item_name": "柔軟原木",
+                    "quantity": 30
+                },
+                {
+                    "item_name": "樹液",
+                    "quantity": 30
+                }
+            ]
+        }
+    ]
+}
