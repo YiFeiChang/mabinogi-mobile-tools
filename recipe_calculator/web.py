@@ -1,8 +1,10 @@
+import argparse
 import json
 import os
+import sys
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import urlsplit, urlparse
 
 from main import load_item, select_best_recipe
 from src.models import Item
@@ -123,16 +125,42 @@ class RecipeRequestHandler(BaseHTTPRequestHandler):
         self.send_json(200, {"tree": tree, "materials": dict(sorted(materials.items()))})
 
 
-def main() -> None:
-    server = ThreadingHTTPServer(("127.0.0.1", 8000), RecipeRequestHandler)
-    print("配方計算器已啟動：http://127.0.0.1:8000")
+def main(arguments: list[str]) -> int:
+    parser = argparse.ArgumentParser(description="Mabinogi Mobile 物品配方計算網站")
+    parser.add_argument(
+        "--url",
+        default="http://127.0.0.1:8000",
+        help="網站監聽 URL（預設：http://127.0.0.1:8000）",
+    )
+    args = parser.parse_args(arguments)
+
+    try:
+        url = urlsplit(args.url)
+        if (
+            url.scheme != "http"
+            or not url.hostname
+            or url.username is not None
+            or url.password is not None
+            or url.path not in ("", "/")
+            or url.query
+            or url.fragment
+        ):
+            parser.error("--url 必須是有效的 HTTP URL，且不可包含路徑、帳密、查詢或片段。")
+        host = url.hostname
+        port = url.port or 80
+    except ValueError as error:
+        parser.error(f"無效的 --url：{error}")
+
+    server = ThreadingHTTPServer((host, port), RecipeRequestHandler)
+    print(f"配方計算器已啟動：{args.url.rstrip('/')}")
     try:
         server.serve_forever()
     except KeyboardInterrupt:
         print("\n配方計算器已停止。")
     finally:
         server.server_close()
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main(sys.argv[1:]))
