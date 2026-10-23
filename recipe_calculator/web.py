@@ -24,14 +24,8 @@ def get_available_items() -> list[str]:
             continue
 
         item = load_item(file_name[:-5], cache)
-        pending = [item]
-        while pending:
-            current = pending.pop()
-            if current.name in names:
-                continue
-            names.add(current.name)
-            for recipe in current.recipes:
-                pending.extend(entry.item for entry in recipe.entries)
+        if item.recipes:
+            names.add(item.name)
 
     return sorted(names)
 
@@ -146,7 +140,7 @@ def main(arguments: list[str]) -> int:
             or url.fragment
         ):
             parser.error("--url 必須是有效的 HTTP URL，且不可包含路徑、帳密、查詢或片段。")
-        host = url.hostname
+        host = "" if url.hostname == "*" else url.hostname
         port = url.port or 80
     except ValueError as error:
         parser.error(f"無效的 --url：{error}")
