@@ -1,0 +1,31 @@
+{
+    "name": "豆乳防風草蛋糕",
+    "menu_order": 8,
+    "recipes": [
+        {
+            "output_quantity": 1,
+            "ingredients": [
+                {
+                    "item_name": "豆乳",
+                    "quantity": 4
+                },
+                {
+                    "item_name": "防風草",
+                    "quantity": 6
+                },
+                {
+                    "item_name": "鮮奶油",
+                    "quantity": 2
+                },
+                {
+                    "item_name": "麵粉",
+                    "quantity": 4
+                },
+                {
+                    "item_name": "糖",
+                    "quantity": 9
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,23 @@
+{
+    "name": "鮮奶油",
+    "menu_order": 5,
+    "recipes": [
+        {
+            "output_quantity": 3,
+            "ingredients": [
+                {
+                    "item_name": "牛奶",
+                    "quantity": 12
+                },
+                {
+                    "item_name": "雞蛋",
+                    "quantity": 6
+                },
+                {
+                    "item_name": "糖",
+                    "quantity": 2
+                }
+            ]
+        }
+    ]
+}

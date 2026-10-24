@@ -49,11 +49,12 @@ python recipe_calculator\main.py -i "焦油" -q 6
 
 ## 配方資料格式
 
-每個物品配方放在 `recipe_calculator/data/items/`，檔名使用物品名稱並以 `.json` 結尾。例如 `焦油.json`：
+每個物品配方放在 `recipe_calculator/data/items/`，檔名使用物品名稱並以 `.json` 結尾。可在此目錄下建立任意層數的子目錄作為分類；直接放在 `items/` 根目錄的物品會歸類為「尚未分類」。例如 `焦油.json`：
 
 ```json
 {
   "name": "焦油",
+  "menu_order": 10,
   "recipes": [
     {
       "output_quantity": 5,
@@ -73,11 +74,16 @@ python recipe_calculator\main.py -i "焦油" -q 6
 ```
 
 - `name`：物品名稱。
+- `menu_order`：選單排序，可省略；數字越小越前，未設定的物品依名稱排序。
 - `recipes`：可製作此物品的配方清單。
 - `output_quantity`：每批配方的產出數量。
 - `ingredients`：每批配方所需材料及數量。
 
 當製作數量無法被每批產量整除時，工具會向上取整批次。
+
+### 分類排序
+
+在 `recipe_calculator/data/category_order.json` 的 `categories` 清單中，依序列出網站選單的分類路徑。此檔案已依現有分類產生範本；清單中未設定的分類會依名稱排序，若設定檔不存在，所有分類皆依名稱排序。
 
 ## 專案結構
 
@@ -87,7 +93,8 @@ recipe_calculator/
 ├── src/
 │   └── models.py           # 物品與配方資料模型
 ├── data/
-│   └── items/              # 物品配方 JSON 資料
+│   ├── items/              # 物品配方 JSON 資料與分類目錄
+│   └── category_order.json # 網站分類排序
 ├── web.py                  # 標準函式庫 HTTP 伺服器與 API
 └── web/
     └── index.html          # 網站介面

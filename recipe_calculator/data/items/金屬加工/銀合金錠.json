@@ -1,19 +1,20 @@
 {
-    "name": "最高級木材",
+    "name": "銀合金錠",
+    "menu_order": 6,
     "recipes": [
         {
             "output_quantity": 3,
             "ingredients": [
                 {
-                    "item_name": "高級木材+",
+                    "item_name": "特殊鋼錠",
                     "quantity": 5
                 },
                 {
-                    "item_name": "最高級原木",
+                    "item_name": "銀礦石",
                     "quantity": 20
                 },
                 {
-                    "item_name": "樹液",
+                    "item_name": "煤炭",
                     "quantity": 16
                 }
             ]

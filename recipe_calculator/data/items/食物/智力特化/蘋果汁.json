@@ -1,0 +1,27 @@
+{
+    "name": "蘋果汁",
+    "menu_order": 1,
+    "recipes": [
+        {
+            "output_quantity": 1,
+            "ingredients": [
+                {
+                    "item_name": "蘋果",
+                    "quantity": 4
+                },
+                {
+                    "item_name": "藥草",
+                    "quantity": 2
+                },
+                {
+                    "item_name": "裝水的瓶子",
+                    "quantity": 1
+                },
+                {
+                    "item_name": "糖",
+                    "quantity": 2
+                }
+            ]
+        }
+    ]
+}

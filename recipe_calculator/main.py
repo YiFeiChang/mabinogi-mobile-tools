@@ -4,7 +4,7 @@ import argparse
 # 匯入 Python 內建的檔案路徑與作業系統互動模組（對應 C# 的 System.IO 與 System.IO.Path）
 import json
 import math
-import os
+from pathlib import Path
 
 # 匯入 Python 內建的系統模組（提供類似 C# System.Environment 的環境互動功能）
 import sys
@@ -14,24 +14,42 @@ import sys
 from src.models import Item, Recipe, RecipeEntry
 
 
+ITEMS_DIR = Path(__file__).resolve().parent / "data" / "items"
+
+
+def find_item_file(item_name: str) -> Path | None:
+    matches = sorted(
+        path for path in ITEMS_DIR.rglob("*.json")
+        if path.stem.casefold() == item_name.casefold()
+    )
+    if len(matches) > 1:
+        paths = ", ".join(str(path.relative_to(ITEMS_DIR)) for path in matches)
+        raise ValueError(f"找到多個名稱為「{item_name}」的物品資料：{paths}")
+    return matches[0] if matches else None
+
+
 def load_item(item_name: str, cache: dict[str, Item]) -> Item:
     """根據物品名稱從 data/items 目錄載入對應的 JSON 檔案，並建立 Item 物件。"""
     # 若快取中已經載入過該物品，則直接回傳（避免重複讀取檔案與重複實例化）
     if item_name in cache:
         return cache[item_name]
 
-    file_path: str = os.path.join(os.path.dirname(__file__), "data", "items", f"{item_name}.json")
+    file_path = find_item_file(item_name)
 
     # 若找不到對應的 JSON 檔案，則視為基礎素材（recipes 設為空清單）
     # 對應 C# 的：若檔案不存在則回傳預設無配方的物件
-    if not os.path.exists(file_path):
+    if file_path is None:
         base_item: Item = Item(name=item_name, recipes=[])
         cache[item_name] = base_item
         return base_item
 
     # 讀取 JSON 檔案內容
-    with open(file_path, "r", encoding="utf-8") as f:
+    with file_path.open("r", encoding="utf-8") as f:
         data: dict = json.load(f)
+
+    menu_order = data.get("menu_order")
+    if menu_order is not None and (isinstance(menu_order, bool) or not isinstance(menu_order, int)):
+        raise ValueError(f"物品「{item_name}」的 menu_order 必須是整數。")
 
     item_obj_name: str = data.get("name", item_name)
     raw_recipes: list[dict] = data.get("recipes", [])
@@ -53,7 +71,7 @@ def load_item(item_name: str, cache: dict[str, Item]) -> Item:
         recipes_list.append(Recipe(output_quantity=output_qty, entries=recipe_entry_list))
 
     # 建立物品實例並存入快取
-    item: Item = Item(name=item_obj_name, recipes=recipes_list)
+    item: Item = Item(name=item_obj_name, recipes=recipes_list, menu_order=menu_order)
     cache[item_name] = item
     return item
 

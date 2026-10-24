@@ -1,20 +1,21 @@
 {
-    "name": "堅硬木材",
+    "name": "高級木材+",
+    "menu_order": 4,
     "recipes": [
         {
             "output_quantity": 3,
             "ingredients": [
                 {
-                    "item_name": "高級木材+",
-                    "quantity": 15
+                    "item_name": "高級木材",
+                    "quantity": 4
                 },
                 {
-                    "item_name": "堅硬原木",
-                    "quantity": 30
+                    "item_name": "高級原木+",
+                    "quantity": 20
                 },
                 {
                     "item_name": "樹液",
-                    "quantity": 30
+                    "quantity": 12
                 }
             ]
         }

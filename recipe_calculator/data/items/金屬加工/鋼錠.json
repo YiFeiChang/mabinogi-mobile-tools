@@ -1,15 +1,16 @@
 {
-    "name": "木材+",
+    "name": "鋼錠",
+    "menu_order": 2,
     "recipes": [
         {
             "output_quantity": 3,
             "ingredients": [
                 {
-                    "item_name": "木材",
+                    "item_name": "鐵錠",
                     "quantity": 3
                 },
                 {
-                    "item_name": "樹液",
+                    "item_name": "煤炭",
                     "quantity": 4
                 }
             ]

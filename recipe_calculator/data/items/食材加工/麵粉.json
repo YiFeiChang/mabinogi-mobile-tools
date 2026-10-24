@@ -1,0 +1,15 @@
+{
+    "name": "麵粉",
+    "menu_order": 2,
+    "recipes": [
+        {
+            "output_quantity": 3,
+            "ingredients": [
+                {
+                    "item_name": "小麥",
+                    "quantity": 15
+                }
+            ]
+        }
+    ]
+}

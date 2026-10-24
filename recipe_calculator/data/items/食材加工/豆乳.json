@@ -1,0 +1,27 @@
+{
+    "name": "豆乳",
+    "menu_order": 8,
+    "recipes": [
+        {
+            "output_quantity": 3,
+            "ingredients": [
+                {
+                    "item_name": "泡水的豆子",
+                    "quantity": 3
+                },
+                {
+                    "item_name": "裝水的瓶子",
+                    "quantity": 3
+                },
+                {
+                    "item_name": "鹽",
+                    "quantity": 1
+                },
+                {
+                    "item_name": "食用油",
+                    "quantity": 1
+                }
+            ]
+        }
+    ]
+}

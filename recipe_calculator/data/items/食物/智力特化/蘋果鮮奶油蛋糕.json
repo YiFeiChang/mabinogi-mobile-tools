@@ -1,0 +1,27 @@
+{
+    "name": "蘋果鮮奶油蛋糕",
+    "menu_order": 6,
+    "recipes": [
+        {
+            "output_quantity": 1,
+            "ingredients": [
+                {
+                    "item_name": "蘋果",
+                    "quantity": 12
+                },
+                {
+                    "item_name": "鮮奶油",
+                    "quantity": 2
+                },
+                {
+                    "item_name": "麵粉",
+                    "quantity": 4
+                },
+                {
+                    "item_name": "糖",
+                    "quantity": 9
+                }
+            ]
+        }
+    ]
+}

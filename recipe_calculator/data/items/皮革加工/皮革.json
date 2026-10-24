@@ -1,5 +1,6 @@
 {
     "name": "皮革",
+    "menu_order": 1,
     "recipes": [
         {
             "output_quantity": 3,

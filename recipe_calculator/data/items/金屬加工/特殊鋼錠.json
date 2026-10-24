@@ -1,20 +1,21 @@
 {
-    "name": "銀合金錠",
+    "name": "特殊鋼錠",
+    "menu_order": 5,
     "recipes": [
         {
             "output_quantity": 3,
             "ingredients": [
                 {
-                    "item_name": "特殊鋼錠",
-                    "quantity": 5
+                    "item_name": "合金鋼錠",
+                    "quantity": 4
                 },
                 {
-                    "item_name": "銀礦石",
+                    "item_name": "白銅礦石",
                     "quantity": 20
                 },
                 {
                     "item_name": "煤炭",
-                    "quantity": 16
+                    "quantity": 12
                 }
             ]
         }

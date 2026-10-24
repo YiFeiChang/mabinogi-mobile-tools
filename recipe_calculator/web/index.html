@@ -104,7 +104,7 @@
         </div>
         <div class="field">
           <label for="quantity">製作數量</label>
-          <input id="quantity" name="quantity" type="number" min="1" step="1" value="1" required>
+          <input id="quantity" name="quantity" type="number" min="1" step="1" required>
           <p class="hint">配方會自動計算完整製作批次。</p>
         </div>
         <button id="calculate" type="submit">計算所需素材</button>
@@ -163,19 +163,24 @@
         const response = await fetch("/api/items");
         if (!response.ok) throw new Error("無法載入物品清單。");
         const items = await response.json();
-        const options = items.map((name) => {
-          const option = document.createElement("option");
-          option.value = name;
-          option.textContent = name;
-          return option;
+        const itemNames = Object.values(items).flat();
+        const groups = Object.entries(items).map(([category, names]) => {
+          const group = document.createElement("optgroup");
+          group.label = category;
+          group.append(...names.map((name) => {
+            const option = document.createElement("option");
+            option.value = name;
+            option.textContent = name;
+            return option;
+          }));
+          return group;
         });
         itemSelect.replaceChildren(
           new Option("請選擇配方物品", "", true, true),
-          ...options
+          ...groups
         );
         itemSelect.disabled = false;
-        itemHint.textContent = `已載入 ${items.length} 種已知配方。`;
-        if (items.includes("巨木長弓S")) itemSelect.value = "巨木長弓S";
+        itemHint.textContent = `已載入 ${itemNames.length} 種已知配方。`;
       } catch (error) {
         itemHint.textContent = error.message;
       }

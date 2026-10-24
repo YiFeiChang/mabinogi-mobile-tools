@@ -1,16 +1,17 @@
 {
-    "name": "鋼錠",
+    "name": "起司",
+    "menu_order": 3,
     "recipes": [
         {
             "output_quantity": 3,
             "ingredients": [
                 {
-                    "item_name": "鐵錠",
-                    "quantity": 3
+                    "item_name": "牛奶",
+                    "quantity": 6
                 },
                 {
-                    "item_name": "煤炭",
-                    "quantity": 4
+                    "item_name": "鹽",
+                    "quantity": 1
                 }
             ]
         }

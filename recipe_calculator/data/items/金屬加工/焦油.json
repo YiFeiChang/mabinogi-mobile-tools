@@ -1,5 +1,6 @@
 {
     "name": "焦油",
+    "menu_order": 4,
     "recipes": [
         {
             "output_quantity": 5,

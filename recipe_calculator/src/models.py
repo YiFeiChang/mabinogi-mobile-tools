@@ -1,9 +1,15 @@
 class Item:
     """代表遊戲中的物品或材料。"""
 
-    def __init__(self, name: str, recipes: list["Recipe"]) -> None:
+    def __init__(
+        self,
+        name: str,
+        recipes: list["Recipe"],
+        menu_order: int | None = None,
+    ) -> None:
         self.name: str = name
         self.recipes: list[Recipe] = recipes
+        self.menu_order: int | None = menu_order
 
 
 class RecipeEntry:

@@ -1,33 +1,69 @@
 import argparse
 import json
-import os
 import sys
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlsplit, urlparse
 
-from main import load_item, select_best_recipe
+from main import ITEMS_DIR, load_item, select_best_recipe
 from src.models import Item
 
 
 APP_DIR = Path(__file__).resolve().parent
-DATA_DIR = APP_DIR / "data" / "items"
+CATEGORY_ORDER_PATH = APP_DIR / "data" / "category_order.json"
 PAGE_PATH = APP_DIR / "web" / "index.html"
 
 
-def get_available_items() -> list[str]:
+def get_category_order() -> list[str]:
+    if not CATEGORY_ORDER_PATH.exists():
+        return []
+
+    with CATEGORY_ORDER_PATH.open("r", encoding="utf-8") as file:
+        data = json.load(file)
+    categories = data.get("categories") if isinstance(data, dict) else None
+    if (
+        not isinstance(categories, list)
+        or any(not isinstance(category, str) for category in categories)
+        or len(categories) != len(set(categories))
+    ):
+        raise ValueError("分類排序設定必須包含不重複的字串 categories 清單。")
+    return categories
+
+
+def get_available_items() -> dict[str, list[str]]:
     cache: dict[str, Item] = {}
-    names: set[str] = set()
+    categories: dict[str, dict[str, Item]] = {}
 
-    for file_name in os.listdir(DATA_DIR):
-        if not file_name.endswith(".json"):
-            continue
-
-        item = load_item(file_name[:-5], cache)
+    for file_path in sorted(ITEMS_DIR.rglob("*.json")):
+        item = load_item(file_path.stem, cache)
         if item.recipes:
-            names.add(item.name)
+            relative_directory = file_path.parent.relative_to(ITEMS_DIR)
+            category = " / ".join(relative_directory.parts) or "尚未分類"
+            categories.setdefault(category, {})[item.name] = item
 
-    return sorted(names)
+    category_order = get_category_order()
+    category_positions = {category: index for index, category in enumerate(category_order)}
+    return {
+        category: [
+            item.name
+            for item in sorted(
+                items.values(),
+                key=lambda item: (
+                    item.menu_order is None,
+                    item.menu_order if item.menu_order is not None else 0,
+                    item.name,
+                ),
+            )
+        ]
+        for category, items in sorted(
+            categories.items(),
+            key=lambda entry: (
+                0 if entry[0] in category_positions else 1,
+                category_positions.get(entry[0], 0),
+                entry[0],
+            ),
+        )
+    }
 
 
 def create_recipe_tree(item: Item, required_quantity: int, cache: dict[str, Item]) -> dict:
@@ -109,7 +145,7 @@ class RecipeRequestHandler(BaseHTTPRequestHandler):
 
         cache: dict[str, Item] = {}
         item = load_item(item_name, cache)
-        if item_name not in get_available_items():
+        if not any(item_name in names for names in get_available_items().values()):
             self.send_json(404, {"error": "找不到這個物品的資料。"})
             return
 

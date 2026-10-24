@@ -1,16 +1,21 @@
 {
-    "name": "巨木長弓S",
+    "name": "蘋果沙拉",
+    "menu_order": 2,
     "recipes": [
         {
             "output_quantity": 1,
             "ingredients": [
                 {
-                    "item_name": "高級木材",
+                    "item_name": "蘋果",
                     "quantity": 4
                 },
                 {
-                    "item_name": "高級皮革",
+                    "item_name": "高麗菜",
                     "quantity": 2
+                },
+                {
+                    "item_name": "美乃滋",
+                    "quantity": 1
                 }
             ]
         }

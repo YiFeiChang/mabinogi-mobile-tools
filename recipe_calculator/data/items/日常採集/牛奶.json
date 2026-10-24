@@ -1,0 +1,15 @@
+{
+    "name": "牛奶",
+    "menu_order": 2,
+    "recipes": [
+        {
+            "output_quantity": 1,
+            "ingredients": [
+                {
+                    "item_name": "空瓶",
+                    "quantity": 1
+                }
+            ]
+        }
+    ]
+}

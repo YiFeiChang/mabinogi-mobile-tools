@@ -1,0 +1,27 @@
+{
+    "name": "起司玉米",
+    "menu_order": 3,
+    "recipes": [
+        {
+            "output_quantity": 1,
+            "ingredients": [
+                {
+                    "item_name": "玉米",
+                    "quantity": 10
+                },
+                {
+                    "item_name": "起司",
+                    "quantity": 2
+                },
+                {
+                    "item_name": "藥草",
+                    "quantity": 2
+                },
+                {
+                    "item_name": "糖",
+                    "quantity": 3
+                }
+            ]
+        }
+    ]
+}

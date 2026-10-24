@@ -1,0 +1,19 @@
+{
+    "name": "木材+",
+    "menu_order": 2,
+    "recipes": [
+        {
+            "output_quantity": 3,
+            "ingredients": [
+                {
+                    "item_name": "木材",
+                    "quantity": 3
+                },
+                {
+                    "item_name": "樹液",
+                    "quantity": 4
+                }
+            ]
+        }
+    ]
+}

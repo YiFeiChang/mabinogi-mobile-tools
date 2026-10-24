@@ -1,5 +1,6 @@
 {
     "name": "鐵錠",
+    "menu_order": 1,
     "recipes": [
         {
             "output_quantity": 3,

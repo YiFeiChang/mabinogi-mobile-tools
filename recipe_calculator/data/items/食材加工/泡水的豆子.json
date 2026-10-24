@@ -1,0 +1,19 @@
+{
+    "name": "泡水的豆子",
+    "menu_order": 6,
+    "recipes": [
+        {
+            "output_quantity": 5,
+            "ingredients": [
+                {
+                    "item_name": "黃豆",
+                    "quantity": 30
+                },
+                {
+                    "item_name": "裝水的瓶子",
+                    "quantity": 3
+                }
+            ]
+        }
+    ]
+}

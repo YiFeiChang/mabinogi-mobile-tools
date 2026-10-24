@@ -1,0 +1,15 @@
+{
+    "name": "裝水的瓶子",
+    "menu_order": 1,
+    "recipes": [
+        {
+            "output_quantity": 1,
+            "ingredients": [
+                {
+                    "item_name": "空瓶",
+                    "quantity": 1
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,27 @@
+{
+    "name": "蘋果舒芙蕾",
+    "menu_order": 4,
+    "recipes": [
+        {
+            "output_quantity": 1,
+            "ingredients": [
+                {
+                    "item_name": "蘋果",
+                    "quantity": 8
+                },
+                {
+                    "item_name": "麵粉",
+                    "quantity": 2
+                },
+                {
+                    "item_name": "雞蛋",
+                    "quantity": 4
+                },
+                {
+                    "item_name": "糖",
+                    "quantity": 4
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,19 @@
+{
+    "name": "巨木長弓S",
+    "menu_order": 4,
+    "recipes": [
+        {
+            "output_quantity": 1,
+            "ingredients": [
+                {
+                    "item_name": "高級木材",
+                    "quantity": 4
+                },
+                {
+                    "item_name": "高級皮革",
+                    "quantity": 2
+                }
+            ]
+        }
+    ]
+}

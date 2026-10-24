@@ -1,0 +1,19 @@
+{
+    "name": "美乃滋",
+    "menu_order": 1,
+    "recipes": [
+        {
+            "output_quantity": 3,
+            "ingredients": [
+                {
+                    "item_name": "雞蛋",
+                    "quantity": 10
+                },
+                {
+                    "item_name": "食用油",
+                    "quantity": 2
+                }
+            ]
+        }
+    ]
+}

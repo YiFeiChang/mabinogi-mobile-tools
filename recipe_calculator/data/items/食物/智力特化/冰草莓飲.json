@@ -1,0 +1,27 @@
+{
+    "name": "冰草莓飲",
+    "menu_order": 5,
+    "recipes": [
+        {
+            "output_quantity": 1,
+            "ingredients": [
+                {
+                    "item_name": "冰",
+                    "quantity": 10
+                },
+                {
+                    "item_name": "草莓",
+                    "quantity": 6
+                },
+                {
+                    "item_name": "藥草",
+                    "quantity": 3
+                },
+                {
+                    "item_name": "糖",
+                    "quantity": 4
+                }
+            ]
+        }
+    ]
+}
